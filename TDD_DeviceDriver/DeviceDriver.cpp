@@ -11,7 +11,7 @@ DeviceDriver::DeviceDriver(FlashMemoryDevice* hardware) : m_hardware(hardware)
 
 int DeviceDriver::read(long address)
 {
-    int nResult[TOTAL_READ_TRY_COUNT] = {NO_DATA, NO_DATA, NO_DATA, NO_DATA, NO_DATA};
+    int nResult[TOTAL_READ_TRY_COUNT] = { nNoData, nNoData, nNoData, nNoData, nNoData };
 
     readFlash(address, nResult);
     checkReadData(nResult);
@@ -38,6 +38,10 @@ void DeviceDriver::checkReadData(int nResult[5])
 
 void DeviceDriver::write(long address, int data)
 {
-    // TODO: implement this method
+    int nReadValue = (int)(m_hardware->read(address));
+
+    if (nNoData != nReadValue) throw exception("WriteFailException");
+
     m_hardware->write(address, (unsigned char)data);
 }
+

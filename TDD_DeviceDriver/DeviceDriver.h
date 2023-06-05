@@ -3,7 +3,6 @@
 
 #define TOTAL_READ_TRY_COUNT    (5)
 #define READ_DELAY_MILLISEC     (1)
-#define NO_DATA                 (0xFF)
 
 class DeviceDriver
 {
@@ -18,4 +17,5 @@ public:
 
 protected:
     FlashMemoryDevice* m_hardware;
+    const int nNoData = 0xFF;
 };
