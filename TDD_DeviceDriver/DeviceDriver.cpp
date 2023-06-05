@@ -11,20 +11,29 @@ DeviceDriver::DeviceDriver(FlashMemoryDevice* hardware) : m_hardware(hardware)
 
 int DeviceDriver::read(long address)
 {
-    int nResult[5];
+    int nResult[TOTAL_READ_TRY_COUNT] = {NO_DATA, NO_DATA, NO_DATA, NO_DATA, NO_DATA};
 
-    for (int i = 0; i < 5; i++)
+    readFlash(address, nResult);
+    checkReadData(nResult);
+
+    return nResult[0];
+}
+
+void DeviceDriver::readFlash(long address, int(&nResult)[5])
+{
+    for (int nReadTryCount = 0; nReadTryCount < TOTAL_READ_TRY_COUNT; nReadTryCount++)
     {
-        Sleep(1);
-        nResult[i] = (int)(m_hardware->read(address));
+        Sleep(READ_DELAY_MILLISEC);
+        nResult[nReadTryCount] = (int)(m_hardware->read(address));
     }
+}
 
-    for (int i = 1; i < 5; i++)
+void DeviceDriver::checkReadData(int nResult[5])
+{
+    for (int i = 1; i < TOTAL_READ_TRY_COUNT; i++)
     {
         if (nResult[0] != nResult[i]) throw exception("ReadFailException");
     }
-
-    return nResult[0];
 }
 
 void DeviceDriver::write(long address, int data)
