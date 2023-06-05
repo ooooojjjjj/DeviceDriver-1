@@ -49,3 +49,36 @@ TEST(ReadTest, ReadDone) {
     EXPECT_THAT(0x7, cDeviceDriver.read(0x0));
 }
 
+TEST(WriteTest, ReadFlash1Time) {
+    MockFlashMemoryDevice cMockFlash;
+
+    EXPECT_CALL(cMockFlash, read(_))
+        .Times(1)
+        .WillRepeatedly(Return(0xFF));
+
+    DeviceDriver cDeviceDriver(&cMockFlash);
+
+    cDeviceDriver.write(0x0, 0x33);
+}
+
+TEST(WriteTest, WriteFailException) {
+    MockFlashMemoryDevice cMockFlash;
+
+    EXPECT_CALL(cMockFlash, read(_))
+        .WillRepeatedly(Return(0x7));
+
+    DeviceDriver cDeviceDriver(&cMockFlash);
+
+    EXPECT_THROW(cDeviceDriver.write(0x0, 0x33), exception);
+}
+
+TEST(WriteTest, WriteDone) {
+    MockFlashMemoryDevice cMockFlash;
+
+    EXPECT_CALL(cMockFlash, read(_))
+        .WillRepeatedly(Return(0xFF));
+
+    DeviceDriver cDeviceDriver(&cMockFlash);
+
+    cDeviceDriver.write(0x0, 0x33);
+}
